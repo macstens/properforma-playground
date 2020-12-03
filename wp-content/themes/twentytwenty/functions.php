@@ -155,24 +155,6 @@ add_action( 'init', 'create_post_type' );
 function create_post_type() {
 
 	// Custom Post Types
-	/*register_post_type( 'ppp_veranstaltung',
-	                    array(
-		                    'labels' => array(
-			                    'name' => __( 'Veranstaltungen' ),
-			                    'singular_name' => __( 'Veranstaltung' )
-		                    ),
-		                    'public' => true,
-		                    'has_archive' => true,
-		                    'show_in_nav_menus' => false,
-		                    'taxonomies' => array('category'),
-		                    'exclude_from_search' => false,
-		                    'rewrite' => array(
-			                    'slug' => 'veranstaltungen',
-			                    'with_front' => false
-		                    ),
-	                    )
-	);*/
-
 	register_post_type( 'ppp_job',
 	                    array(
 		                    'labels' => array(
@@ -190,25 +172,6 @@ function create_post_type() {
 		                    ),
 	                    )
 	);
-
-	/*register_post_type( 'ppp_ansprechpartner',
-	                    array(
-		                    'labels' => array(
-			                    'name' => __( 'Ansprechpartner' ),
-			                    'singular_name' => __( 'Ansprechpartner' )
-		                    ),
-		                    'public' => true,
-		                    'has_archive' => true,
-		                    'show_ui' => true,
-		                    'supports' => array('title'),
-		                    'taxonomies' => array('category'),
-		                    'rewrite' => array(
-			                    'slug' => 'ansprechpartner',
-			                    'with_front' => false
-		                    ),
-	                    )
-	);*/
-
 }
 
 add_action( 'after_setup_theme', 'twentytwenty_theme_support' );
