@@ -40,6 +40,32 @@
 				 * called content-___.php (where ___ is the Post Format name) and that will be used instead.
 				 */
 				get_template_part( 'template-parts/content', 'jobs' );
+
+				$nestedArgs = array(
+					'post_type'				=> 'ppp_job',
+					'posts_per_page'	    => 2,
+					'post__not_in'          => array(get_the_ID()),
+					'orderby'               => 'rand',
+				);
+
+				global $wp_query;
+				$wp_query = new WP_Query( $nestedArgs );
+				if ( $wp_query->have_posts() ) : ?>
+				<h4>Weitere Jobs</h4>
+				<ul class="list">
+				<?php
+					while ( $wp_query->have_posts() ) : $wp_query->the_post();
+				?>
+					<li>
+						<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+					</li>
+				<?php
+					endwhile;
+				?>
+					</ul>
+				<?php
+				endif;
+				wp_reset_postdata();
 				?>
 			<?php endwhile; ?>
 
