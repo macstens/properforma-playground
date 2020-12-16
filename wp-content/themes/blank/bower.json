@@ -1,0 +1,13 @@
+{
+  "name": "blank",
+  "private": true,
+  "dependencies": {
+    "jquery": "latest",
+    "modernizr": "latest",
+    "bootstrap": "latest"
+  },
+  "devDependencies": {
+    "chai": "latest",
+    "mocha": "latest"
+  }
+}
