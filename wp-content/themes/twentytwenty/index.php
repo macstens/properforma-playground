@@ -21,8 +21,6 @@ get_header();
 
 	<?php
 
-	echo ppp_getproducts(100);
-
 	$archive_title    = '';
 	$archive_subtitle = '';
 

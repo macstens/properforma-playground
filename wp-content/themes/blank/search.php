@@ -11,9 +11,28 @@ get_header();
 ?>
 
 	<main id="primary" class="site-main">
+		<?php
+		$args = array(
+			'post_type' => $_GET['post_type'],
+			'post_status' => 'publish',
+			's' => $_GET['s'],
+			'posts_per_page' => 8,
+			'orderby' => 'title',
+			'order' => 'ASC'
+		);
 
+		$loop = new WP_Query( $args );
+		echo "<p>custom: </p>";
+		while ( $loop->have_posts() ) : $loop->the_post();
+			print the_title();
+			the_excerpt();
+		endwhile;
+
+		wp_reset_postdata();
+		?>
 		<?php if ( have_posts() ) : ?>
-
+			<p><?php $headline = __('Search Headline:', 'blank'); ?></p>
+			<h2><?php echo $headline; ?></h2>
 			<header class="page-header">
 				<h1 class="page-title">
 					<?php

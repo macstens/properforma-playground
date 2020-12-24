@@ -142,6 +142,9 @@ add_action( 'widgets_init', 'blank_widgets_init' );
 function blank_scripts() {
 	wp_enqueue_style( 'blank-style', get_stylesheet_uri(), array(), _S_VERSION );
 	wp_style_add_data( 'blank-style', 'rtl', 'replace' );
+
+	wp_enqueue_script( 'blank-script', get_template_directory() . '/js/home.js', array(), _S_VERSION, false );
+	wp_enqueue_script( 'blank-script-products', get_template_directory() . '/js/products.js', array('blank-script'), _S_VERSION, false );
 }
 add_action( 'wp_enqueue_scripts', 'blank_scripts' );
 
@@ -172,3 +175,26 @@ if ( defined( 'JETPACK__VERSION' ) ) {
 	require get_template_directory() . '/inc/jetpack.php';
 }
 
+add_action( 'init', 'create_post_type' );
+
+function create_post_type() {
+
+	// Custom Post Types
+	register_post_type( 'ppp_job',
+	                    array(
+		                    'labels' => array(
+			                    'name' => __( 'Stellenangebote' ),
+			                    'singular_name' => __( 'Stellenangebot' )
+		                    ),
+		                    'public' => true,
+		                    'has_archive' => true,
+		                    'show_in_nav_menus' => false,
+		                    'supports' => array('title', 'editor'),
+		                    'taxonomies' => array('category'),
+		                    'rewrite' => array(
+			                    'slug' => 'stellenangebote',
+			                    'with_front' => false
+		                    ),
+	                    )
+	);
+}
