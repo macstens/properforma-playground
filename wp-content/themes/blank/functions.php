@@ -198,3 +198,39 @@ function create_post_type() {
 	                    )
 	);
 }
+
+/**
+ * Redefine the sites Locale (site langauge)
+ *
+ * In this example we try to get the country and the language from the user custom fields,
+ * fall back to en and US.
+ */
+function ppp_redefine_locale($locale) {
+
+	$user = wp_get_current_user();
+	$userID = 'user_' . $user->ID;
+	$langCode = get_field('sprache', $userID);
+	$countryParts = explode('_', $langCode);
+	$lang = $countryParts[0];
+	$country = $countryParts[1];
+
+	if('default' !== $country) {
+		$locale = $lang . '_' . strtoupper($country);
+	} else {
+		$locale = $lang . '-' . $country;
+	}
+
+	return $locale;
+
+}
+add_filter('locale', 'ppp_redefine_locale', 10);
+
+
+/**
+ * Load translations for wpdocs_theme
+ */
+function ppp_theme_setup(){
+	load_theme_textdomain('ppp', get_template_directory() . '/languages');
+}
+
+add_action('after_setup_theme', 'ppp_theme_setup');
