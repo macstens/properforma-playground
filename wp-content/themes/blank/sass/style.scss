@@ -102,3 +102,7 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 @import "utilities/alignments";
 
 @import "../bower_components/bootstrap/scss/bootstrap";
+
+body{
+	background-image: url($static-url + "/wp-content/themes/blank/screenshot.png");
+}

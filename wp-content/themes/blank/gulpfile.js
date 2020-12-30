@@ -10,17 +10,37 @@ const image = require('gulp-image');
 const concat = require('gulp-concat');
 const sourcemaps = require('gulp-sourcemaps');
 const del = require('del');
+const lec = require('gulp-line-ending-corrector');
+const header = require('gulp-header');
 
 sass.compiler = require('node-sass');
 
+var staticUrlDev        = "'http://properforma-playground.vi'";
+var staticUrlProduction = "'https://properforma.de'";
+
 // Compile SCSS to CSS
 function styles() {
-	return gulp.src('./sass/style.scss')
-	           .pipe(sourcemaps.init()) // sourcemaps vorbereitung
-	           .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError)) // sass compiler wird ausgeführt, in diesem fall compressed
-	           .pipe(sourcemaps.write()) // sourcemaps wird geschrieben
-	           .pipe(rename('style.css')) // Zieldateiname
-	           .pipe(gulp.dest('.')); // schreiben in das Verzeichnis relativ zum gulpfile
+	var staticUrl;
+	console.log(process.env.NODE_ENV);
+	if(process.env.NODE_ENV == 'development') {
+		staticUrl = staticUrlDev;
+		return gulp.src('./sass/style.scss')
+		           .pipe(header('$static-url: ' + staticUrl + ';\n'))
+		           .pipe(sourcemaps.init()) // sourcemaps vorbereitung
+		           .pipe(sass().on('error', sass.logError)) // sass compiler wird ausgeführt, in diesem fall compressed
+		           .pipe(sourcemaps.write()) // sourcemaps wird geschrieben
+		           .pipe(lec())
+		           .pipe(rename('style.css')) // Zieldateiname
+		           .pipe(gulp.dest('.')); // schreiben in das Verzeichnis relativ zum gulpfile
+	} else {
+		staticUrl = staticUrlProduction;
+		return gulp.src('./sass/style.scss')
+		           .pipe(header('$static-url: ' + staticUrl + ';\n'))
+		           .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError)) // sass compiler wird ausgeführt, in diesem fall compressed
+		           .pipe(lec())
+		           .pipe(rename('style.css')) // Zieldateiname
+		           .pipe(gulp.dest('.')); // schreiben in das Verzeichnis relativ zum gulpfile
+	}
 }
 
 function scriptsHome() {
@@ -28,6 +48,7 @@ function scriptsHome() {
 	return gulp.src(src)
 	           .pipe(babel())
 	           .pipe(concat('home.js'))
+	           .pipe(lec())
 	           .pipe(uglify())
 	           .pipe(gulp.dest("./dist/js-min"))
 	           .on('error', console.log)
@@ -38,6 +59,7 @@ function scriptsProducts() {
 	return gulp.src(src)
 	           .pipe(babel())
 	           .pipe(concat('products.js'))
+	           .pipe(lec())
 	           .pipe(uglify())
 	           .pipe(gulp.dest("./dist/js-min"))
 	           .on('error', console.log)

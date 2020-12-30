@@ -57,4 +57,12 @@
 			?>
 			<?php get_search_form(); ?>
 		</nav><!-- #site-navigation -->
+
+		<?php if ( is_active_sidebar( 'header-widget-area' ) ) { ?>
+
+		 <aside class="header-widget-area" role="complementary">
+		    <?php dynamic_sidebar( 'header-widget-area' ); ?>
+		 </aside>
+
+		<?php } ?>
 	</header><!-- #masthead -->

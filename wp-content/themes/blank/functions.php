@@ -180,24 +180,40 @@ add_action( 'init', 'create_post_type' );
 function create_post_type() {
 
 	// Custom Post Types
-	register_post_type( 'ppp_job',
-	                    array(
-		                    'labels' => array(
-			                    'name' => __( 'Stellenangebote' ),
-			                    'singular_name' => __( 'Stellenangebot' )
-		                    ),
-		                    'public' => true,
-		                    'has_archive' => true,
-		                    'show_in_nav_menus' => false,
-		                    'supports' => array('title', 'editor'),
-		                    'taxonomies' => array('category'),
-		                    'rewrite' => array(
-			                    'slug' => 'stellenangebote',
-			                    'with_front' => false
-		                    ),
-	                    )
+	register_post_type('ppp_job',
+	                   [
+		                   'labels'            => [
+			                   'name'          => __('Stellenangebote'),
+			                   'singular_name' => __('Stellenangebot')
+		                   ],
+		                   'public'            => true,
+		                   'has_archive'       => true,
+		                   'show_in_nav_menus' => false,
+		                   'supports'          => [
+			                   'title',
+			                   'editor'
+		                   ],
+		                   'taxonomies'        => ['category'],
+		                   'rewrite'           => [
+			                   'slug'       => 'stellenangebote',
+			                   'with_front' => false
+		                   ],
+	                   ]
 	);
 }
+
+function ppp_register_widgets() {
+	register_sidebar( array(
+	      'name' => __( 'Header Widget Area', 'blank' ),
+	      'id' => 'header-widget-area',
+	      'description' => __( 'A widget area located in the header', 'blank' ),
+	      'before_widget' => '<div id="%1$s" class="widget-container %2$s">',
+	      'after_widget' => '</div>',
+	      'before_title' => '<h3 class="widget-title">',
+	      'after_title' => '</h3>',
+	  ) );
+}
+add_action( 'widgets_init', 'ppp_register_widgets' );
 
 /**
  * Redefine the sites Locale (site langauge)
