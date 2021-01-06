@@ -143,8 +143,8 @@ function blank_scripts() {
 	wp_enqueue_style( 'blank-style', get_stylesheet_uri(), array(), _S_VERSION );
 	wp_style_add_data( 'blank-style', 'rtl', 'replace' );
 
-	wp_enqueue_script( 'blank-script', get_template_directory() . '/js/home.js', array(), _S_VERSION, false );
-	wp_enqueue_script( 'blank-script-products', get_template_directory() . '/js/products.js', array('blank-script'), _S_VERSION, false );
+	wp_enqueue_script( 'blank-script', get_template_directory_uri() . '/dist/js-min/home.js', array(), _S_VERSION, true );
+	#wp_enqueue_script( 'blank-script-products', get_template_directory_uri() . '/dist/js-min/products.js', array('blank-script'), _S_VERSION, true );
 }
 add_action( 'wp_enqueue_scripts', 'blank_scripts' );
 
@@ -250,3 +250,66 @@ function ppp_theme_setup(){
 }
 
 add_action('after_setup_theme', 'ppp_theme_setup');
+
+/** === AJAX endpoints === */
+function filter_posts() {
+	$catSlug = $_POST['category'];
+
+	$ajaxposts = new WP_Query([
+		                          'post_type' => 'ppp_job',
+		                          'posts_per_page' => -1,
+		                          'category_name' => $catSlug
+	                          ]);
+	$response = '';
+
+	if($ajaxposts->have_posts()) {
+		while($ajaxposts->have_posts()) : $ajaxposts->the_post();
+			ob_start();
+			get_template_part('template-parts/content', 'job-list-item');
+			$response .= ob_get_clean();
+		endwhile;
+		wp_send_json_success($response);
+	} else {
+		wp_send_json_error();
+	}
+}
+add_action('wp_ajax_filter_posts', 'filter_posts');
+add_action('wp_ajax_nopriv_filter_posts', 'filter_posts');
+
+function filter_posts_acf() {
+	$salary = $_POST['salary'];
+
+	$ajaxposts = new WP_Query([
+		                          'post_type' => 'ppp_job',
+		                          'posts_per_page' => -1,
+		                          'meta_query' => [
+			                          'relation'		=> 'AND',
+			                          [
+				                          'key'     => 'salary',
+				                          'value'   => $salary,
+				                          'type'    => 'NUMERIC',
+				                          'compare'	=> '<='
+			                          ]
+		                          ]
+							]);
+	$response = '';
+
+	if($ajaxposts->have_posts()) {
+		while($ajaxposts->have_posts()) : $ajaxposts->the_post();
+			ob_start();
+			get_template_part('template-parts/content', 'job-list-item');
+			$response .= ob_get_clean();
+		endwhile;
+		wp_send_json_success($response);
+	} else {
+		wp_send_json_error();
+	}
+}
+add_action('wp_ajax_filter_posts_acf', 'filter_posts_acf');
+add_action('wp_ajax_nopriv_filter_posts_acf', 'filter_posts_acf');
+
+// naming convention:
+#add_action('wp_ajax_<action>', '<action>');
+#add_action('wp_ajax_nopriv_<action>', '<action>');
+
+/** === AJAX endpoints end === */

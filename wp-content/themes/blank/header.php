@@ -22,10 +22,9 @@
 
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
-<div id="page" class="site">
-	<a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e( 'Skip to content', 'blank' ); ?></a>
-
-	<header id="masthead" class="site-header">
+<div id="page" class="site container">
+	<div class="row">
+	<header id="masthead" class="site-header col-12">
 		<div class="site-branding">
 			<?php
 			the_custom_logo();
@@ -66,3 +65,4 @@
 
 		<?php } ?>
 	</header><!-- #masthead -->
+	</div>

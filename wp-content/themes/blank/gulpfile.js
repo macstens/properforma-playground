@@ -44,7 +44,7 @@ function styles() {
 }
 
 function scriptsHome() {
-	var src = "./js/scripts.js";
+	var src = ["./bower_components/jquery/dist/jquery.js", "./js/scripts.js"];
 	return gulp.src(src)
 	           .pipe(babel())
 	           .pipe(concat('home.js'))

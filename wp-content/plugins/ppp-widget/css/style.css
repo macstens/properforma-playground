@@ -1,7 +1,1 @@
-.btn.btn--cta{
-	background-color: #f00;
-	color: #fff;
-	display: block;
-	padding: 10px 15px;
-	text-decoration: none;
-}
+.btn.btn--cta{background-color:#f00;color:#fff;display:block;padding:10px 15px;text-decoration:none}.btn.btn--cta:hover{background-color:green}
