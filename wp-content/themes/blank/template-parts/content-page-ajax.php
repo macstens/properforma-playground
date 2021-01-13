@@ -57,14 +57,17 @@
 	<form role="search" method="get" id="searchform-salary" class="searchform" action="/">
 		<div>
 			<label for="salary">Search for max. salary:</label>
-			<input type="hidden" value="" name="s" id="s" />
+			<input type="hidden" value="" name="s" id="s-s" />
 			<input type="number" value="" name="salary" id="salary" />
-			<input type="submit" id="searchsubmit" value="Search" />
+			<input type="submit" id="searchsubmit-s" value="Search" />
 		</div>
 	</form>
 
 	<ul class="list-group" id="salary-list">
 	</ul>
+<p class="email">
+	<?php echo wpcodex_hide_email_shortcode('', 'info@properfoma.de'); ?>
+</p>
 
 	<?php if ( get_edit_post_link() ) : ?>
 		<footer class="entry-footer">

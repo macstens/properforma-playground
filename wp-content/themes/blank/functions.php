@@ -136,15 +136,28 @@ function blank_widgets_init() {
 }
 add_action( 'widgets_init', 'blank_widgets_init' );
 
+const RECAPTCHASITEKEY = '6LdT9ygaAAAAAE28WyG7WNI4dvjrogeXgxtrLgz3';
+const RECAPTCHASITESECRET = '6LdT9ygaAAAAAImxJr-fwGM7d75-ClbcQ96uGaUW';
 /**
  * Enqueue scripts and styles.
  */
 function blank_scripts() {
+
 	wp_enqueue_style( 'blank-style', get_stylesheet_uri(), array(), _S_VERSION );
 	wp_style_add_data( 'blank-style', 'rtl', 'replace' );
 
 	wp_enqueue_script( 'blank-script', get_template_directory_uri() . '/dist/js-min/home.js', array(), _S_VERSION, true );
 	#wp_enqueue_script( 'blank-script-products', get_template_directory_uri() . '/dist/js-min/products.js', array('blank-script'), _S_VERSION, true );
+
+	wp_register_script( 'recaptcha', 'https://www.google.com/recaptcha/api.js?render=' . RECAPTCHASITEKEY, array(), _S_VERSION, false );
+	wp_enqueue_script('recaptcha');
+	wp_localize_script( 'recaptcha', 'recaptcha_options',
+	                    array(
+		                    'sitekey' =>RECAPTCHASITEKEY,
+		                    // 'secret'=> RECAPTCHASITESECRET
+	                    )
+	);
+
 }
 add_action( 'wp_enqueue_scripts', 'blank_scripts' );
 
@@ -308,8 +321,53 @@ function filter_posts_acf() {
 add_action('wp_ajax_filter_posts_acf', 'filter_posts_acf');
 add_action('wp_ajax_nopriv_filter_posts_acf', 'filter_posts_acf');
 
+function verify_recaptcha() {
+	# Verify captcha
+	$post_data = http_build_query(
+		array(
+			'secret' => RECAPTCHASITESECRET,
+			'response' => $_POST['g-recaptcha-response'],
+			'remoteip' => $_SERVER['REMOTE_ADDR']
+		)
+	);
+	$opts = array('http' =>
+		              array(
+			              'method'  => 'POST',
+			              'header'  => 'Content-type: application/x-www-form-urlencoded',
+			              'content' => $post_data
+		              )
+	);
+	$context  = stream_context_create($opts);
+	$response = file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context);
+	$result = json_decode($response);
+	if (!$result->success) {
+		throw new Exception('Gah! CAPTCHA verification failed. Please email me directly at: jstark at jonathanstark dot com', 1);
+	}
+	// return $result;
+	wp_send_json($result);
+}
+add_action('wp_ajax_verify_recaptcha', 'verify_recaptcha');
+add_action('wp_ajax_nopriv_verify_recaptcha', 'verify_recaptcha');
+
 // naming convention:
 #add_action('wp_ajax_<action>', '<action>');
 #add_action('wp_ajax_nopriv_<action>', '<action>');
 
 /** === AJAX endpoints end === */
+
+/**
+ * [email]info@domain.com[/email]
+ * @param      $atts
+ * @param null $content
+ *
+ * @return string|void
+ */
+function wpcodex_hide_email_shortcode( $atts , $content = null ) {
+	if ( ! is_email( $content ) ) {
+		return;
+	}
+
+	return '<a href="mailto:' . antispambot( $content ) . '">' . antispambot( $content ) . '</a>';
+}
+
+add_shortcode( 'email', 'wpcodex_hide_email_shortcode' );
