@@ -341,7 +341,7 @@ function verify_recaptcha() {
 	$response = file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context);
 	$result = json_decode($response);
 	if (!$result->success) {
-		throw new Exception('Gah! CAPTCHA verification failed. Please email me directly at: jstark at jonathanstark dot com', 1);
+		throw new Exception('CAPTCHA verification failed.', 1);
 	}
 	// return $result;
 	wp_send_json($result);
